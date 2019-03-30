@@ -23,7 +23,7 @@ def parse_args():
     step_size=""
     for opt, arg in opts:
         if opt == '-h':
-            print 'age.py -w <window_size> -t <time_range> -a <arrival_type> -l <lambda> -p <policy>' 
+            print 'age.py -w <window_size> -t <time_range> -a <arrival_type> -l <lambda> -p <policy> -s <step_size>' 
             sys.exit()
         elif opt in ('-w', '--window_size'):
             window_size = int(arg)
