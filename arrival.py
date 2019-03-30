@@ -1,7 +1,7 @@
-from funcs import equalize
 import itertools
 import numpy as np
 from aoi import AoI
+from equalize import equalize
 
 class Arrival:
     def __init__(self, time_range, arrival_type, lam):
