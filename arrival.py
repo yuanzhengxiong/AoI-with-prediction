@@ -1,5 +1,6 @@
 import itertools
 import numpy as np
+import sys
 from aoi import AoI
 from equalize import equalize
 
@@ -54,5 +55,8 @@ class Arrival:
             replanned_arrival = np.array(equalize(l, n))
             # print l, n, replanned_arrival
             self.seq[t:t+window_size] = replanned_arrival
+        else:
+            print "Error: no such policy yet."
+            sys.exit(2)
             
         return self.replanned_age_sum(t, self.seq[t:t+window_size], aoi.seq[t])
