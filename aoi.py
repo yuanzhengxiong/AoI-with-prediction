@@ -1,3 +1,5 @@
+from __future__ import division
+
 class AoI:
     def __init__(self, arrival_seq, init_age=0):
         self.cur = init_age
