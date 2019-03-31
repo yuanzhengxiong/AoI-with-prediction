@@ -49,6 +49,7 @@ class Arrival:
                     min_sum = window_age_sum
                     replanned_arrival = np.array(arr)
             self.seq[t:t+window_size] = replanned_arrival
+            return self.replanned_age_sum(t, self.seq[t:t+window_size], aoi.seq[t])
         elif(policy == "equal_spreading"):
             l = len(self.seq[t:t+window_size])
             n = sum(self.seq[t:t+window_size])
@@ -59,4 +60,3 @@ class Arrival:
             print "Error: no such policy yet."
             sys.exit(2)
             
-        return self.replanned_age_sum(t, self.seq[t:t+window_size], aoi.seq[t])
