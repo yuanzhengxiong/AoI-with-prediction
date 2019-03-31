@@ -49,7 +49,7 @@ class Arrival:
                     min_sum = window_age_sum
                     replanned_arrival = np.array(arr)
             self.seq[t:t+window_size] = replanned_arrival
-        elif(policy == "equalize_window"):
+        elif(policy == "equal_spreading"):
             l = len(self.seq[t:t+window_size])
             n = sum(self.seq[t:t+window_size])
             replanned_arrival = np.array(equalize(l, n))
