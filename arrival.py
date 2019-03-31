@@ -32,7 +32,7 @@ class Arrival:
         replanned_window_aoi = AoI(replanned_arrival, init_age) 
         return sum(replanned_window_aoi.seq)-init_age
     
-    def replan(self, t, window_size, policy, aoi):
+    def replan(self, t, window_size, policy, aoi=''):
         if(policy == "all_shift_to_earliest"):
             i = 0
             for j, x in enumerate(self.seq[t:t+window_size]):
