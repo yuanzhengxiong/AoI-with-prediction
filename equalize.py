@@ -9,27 +9,42 @@ def equalize(l, n):
         return [1]*l
     if (l==2):
         return random.choice([[1, 0], [0, 1]])
-    if (l==3):
-        if (n==1):
-            return [0,1,0]
+    if (n==1):
+        if (l%2==0):
+            return random.choice([equalize(l-1, 1)+[0], [0]+equalize(l-1, 1)])
+        else:
+            return [0]*(l//2)+[1]+[0]*(l//2)
+    if (n>l/2):
+        return [1-x for x in equalize(l,l-n)]
+    if (n==l/2):
+        return random.choice([[0,1]*n, [1,0]*n]) 
+    if (n+n+1==l):
+        return [0,1]*n+[0]
+
+    if (l==6):
         if (n==2):
-            return [1,0,1]
-    if (l==4):
-        if (n==1):
-            return random.choice([[0,1,0,0], [0,0,1,0]])
+            return [0,1,0,0,1,0]
+    if (l==7):
         if (n==2):
-            return random.choice([[0,1,0,1], [1,0,1,0]])
+            return [0,0,1,0,1,0,0]
+    if (l==8):
+        if (n==2):
+            return [0,0,1,0,0,1,0,0]
         if (n==3):
-            return random.choice([[1,1,0,1], [1,0,1,1]])
-    if (l==5):
-        if (n==1):
-            return [0,0,1,0,0]
+            return [0]+[1]+random.choice([[0]+[1]+[0,0], [0,0]+[1]+[0]])+[1]+[0]
+    if (l==9):
         if (n==2):
-            return [0,1,0,1,0]
+            return [0,0,1,0,0,0,1,0,0]
         if (n==3):
-            return [1,0,1,0,1]
+            return random.choice([[0,0,1,0,1,0,1,0,0], [0,1,0,0,1,0,0,1,0]])
+    if (l==10):
+        if (n==2):
+            return random.choice([[0]+equalize(9,2), equalize(9,2)+[0]])
+        if (n==3):
+            return [0]*2+[1]+random.choice([[0]+[1]+[0,0], [0,0]+[1]+[0]])+[1]+[0]*2
         if (n==4):
-            return [1,1,0,1,1]
+            return equalize(5,2)*2
+            
         
 # def equalize(l, n):
 #     if (n==0):
