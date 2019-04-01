@@ -1,6 +1,7 @@
 from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
+import csv
 from aoi import AoI
 from arrival import Arrival 
 from funcs import parse_args
@@ -8,7 +9,7 @@ from funcs import parse_args
 seed = 3
 reset_val = 0
 
-def main():
+def show_policy_effect():
     window_size, time_range, arrival_type, lam, policy, step_size = parse_args()
     np.random.seed(seed)
 
@@ -57,5 +58,32 @@ def main():
 
     plt.show()
 
+def test_equal_spreading():
+    avg_num = int(1e3) 
+    time_range = int(1e3)
+    arrival_type = 'Bernoulli'
+    policy = 'equal_spreading'
+    with open('data_for_equal_spreading.csv', mode='w') as csv_file:
+        fieldnames=['w', 's', 'p', 'T', 'avg_age', 'max_age'] 
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+        for p in [x/10 for x in range(1, 10)]:
+            for w in range(1, 11):
+                for s in range(1, w+1):
+                    aoi_avgs = []
+                    aoi_maxs = []
+                    for i in range(avg_num):
+                        arrival = Arrival(time_range, arrival_type, p) 
+                        for t in range(0, time_range-w+1, s):
+                            arrival.replan(t, w, policy)
+                        aoi = AoI(arrival.seq)
+                        aoi_avgs.append(aoi.avg)
+                        aoi_maxs.append(aoi.max)
+
+                    data_dict = {'w': w, 's': s, 'p': p, 'T': time_range, 'avg_age': sum(aoi_avgs)/avg_num, 'max_age': sum(aoi_maxs)/avg_num}
+                    print data_dict
+                    writer.writerow(data_dict)
+
 if __name__ == "__main__":
-    main()
+    #show_policy_effect()
+    test_equal_spreading()
