@@ -63,12 +63,12 @@ def test_equal_spreading():
     time_range = int(1e3)
     arrival_type = 'Bernoulli'
     policy = 'equal_spreading'
-    with open('data_for_equal_spreading.csv', mode='w') as csv_file:
+    with open('./data/data_for_equal_spreading.csv', mode='w') as csv_file:
         fieldnames=['w', 's', 'p', 'T', 'avg_age', 'max_age'] 
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
-        for p in [x/10 for x in range(1, 10)]:
-            for w in range(1, 11):
+        for p in [x/10 for x in range(5, 6)]:
+            for w in range(67, 101):
                 for s in range(1, w+1):
                     aoi_avgs = []
                     aoi_maxs = []

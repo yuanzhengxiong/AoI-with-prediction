@@ -77,7 +77,7 @@ def plot_w(df_ps, s, age_type):
 
 
 def main():
-    df = pd.read_csv('./data_for_equal_spreading.csv_100', header=0)
+    df = pd.read_csv('./data/data_for_equal_spreading.csv_100', header=0)
     df_ps = []
     for i in [x/10 for x in range(1, 10)]: 
         df_ps.append(df[df.p==i])
