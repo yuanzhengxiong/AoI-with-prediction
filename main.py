@@ -5,6 +5,7 @@ import csv
 from aoi import AoI
 from arrival import Arrival 
 from funcs import parse_args
+from multiprocessing import Pool
 
 seed = 3
 reset_val = 0
@@ -58,32 +59,46 @@ def show_policy_effect():
 
     plt.show()
 
+def write_data(paras):
+    avg_num, time_range, arrival_type, policy, p, w_range = paras
+    filename = "./data/av_{0}_tr_{1}_ar_{2}_po_{3}_p_{4}_wr_{5}-{6}.csv".format(avg_num, time_range, arrival_type, policy, p, w_range[0], w_range[1])
+    with open(filename, mode='w') as csv_file:
+        fieldnames=['w', 's', 'p', 'T', 'avg_age', 'max_age'] 
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+        for w in range(w_range[0], w_range[1]+1):
+            for s in range(1, w+1):
+                aoi_avgs = []
+                aoi_maxs = []
+                for i in range(avg_num):
+                    arrival = Arrival(time_range, arrival_type, p) 
+                    for t in range(0, time_range-w+1, s):
+                        arrival.replan(t, w, policy)
+                    aoi = AoI(arrival.seq)
+                    aoi_avgs.append(aoi.avg)
+                    aoi_maxs.append(aoi.max)
+
+                data_dict = {'w': w, 's': s, 'p': p, 'T': time_range, 'avg_age': sum(aoi_avgs)/avg_num, 'max_age': sum(aoi_maxs)/avg_num}
+                print data_dict
+                writer.writerow(data_dict)
+                csv_file.flush()
+    
 def test_equal_spreading():
     avg_num = int(1e4) 
     time_range = int(3e2)
     arrival_type = 'Bernoulli'
     policy = 'equal_spreading'
-    with open('./data/v2_data_for_equal_spreading.csv', mode='w') as csv_file:
-        fieldnames=['w', 's', 'p', 'T', 'avg_age', 'max_age'] 
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-        writer.writeheader()
-        for p in [x/100 for x in range(5, 55, 5)]:
-            for w in range(1, 31):
-                for s in range(1, w+1):
-                    aoi_avgs = []
-                    aoi_maxs = []
-                    for i in range(avg_num):
-                        arrival = Arrival(time_range, arrival_type, p) 
-                        for t in range(0, time_range-w+1, s):
-                            arrival.replan(t, w, policy)
-                        aoi = AoI(arrival.seq)
-                        aoi_avgs.append(aoi.avg)
-                        aoi_maxs.append(aoi.max)
+    w_range = [1, time_range//10]
 
-                    data_dict = {'w': w, 's': s, 'p': p, 'T': time_range, 'avg_age': sum(aoi_avgs)/avg_num, 'max_age': sum(aoi_maxs)/avg_num}
-                    print data_dict
-                    writer.writerow(data_dict)
-                    csv_file.flush()
+    paras_list = []
+    for p in [x/100 for x in range(45, 55, 5)]:
+        paras_list.append([avg_num, time_range, arrival_type, policy, p, w_range])
+    print paras_list
+
+    pool = Pool(6)
+    pool.map(write_data, paras_list)
+    pool.close()
+    pool.join()
 
 if __name__ == "__main__":
     #show_policy_effect()
