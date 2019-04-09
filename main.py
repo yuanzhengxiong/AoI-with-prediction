@@ -83,7 +83,7 @@ def test_equal_spreading():
                     data_dict = {'w': w, 's': s, 'p': p, 'T': time_range, 'avg_age': sum(aoi_avgs)/avg_num, 'max_age': sum(aoi_maxs)/avg_num}
                     print data_dict
                     writer.writerow(data_dict)
-                    csv_file.flash()
+                    csv_file.flush()
 
 if __name__ == "__main__":
     #show_policy_effect()
