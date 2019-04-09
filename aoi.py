@@ -1,5 +1,4 @@
 from __future__ import division
-import numpy as np
 
 class AoI:
     def __init__(self, arrival_seq, init_age=0):
@@ -7,9 +6,8 @@ class AoI:
         self.seq = [init_age]
         for arrival in arrival_seq:
             self.op(arrival)
-        self.seq = np.array(self.seq) 
-        self.max = self.seq.max()
-        self.avg = self.seq.mean()
+        self.max = max(self.seq)
+        self.avg = sum(self.seq)/len(self.seq)
     
     def op(self, arrival): # AoI operator
         self.cur = self.cur+1 if arrival==0 else 0
