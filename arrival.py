@@ -5,11 +5,14 @@ from aoi import AoI
 from equalize import equalize
 
 class Arrival:
-    def __init__(self, time_range, arrival_type, lam):
+    def __init__(self, time_range, arrival_type, p):
         self.time_range = time_range
         self.seq = []
         if(arrival_type == "Bernoulli"):
-            self.seq = np.random.binomial(1, lam, time_range)
+            self.seq = np.random.binomial(1, p, time_range)
+        elif(arrival_type == "Markovian"):
+            transition_matrix = np.array([[1-p, p], [p, 1-p]])
+            self.seq = MarkovChain(transition_matrix).generate_seq(initial_state=0, length=time_range)
         elif(arrival_type == "test"):
             self.seq=[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0]
 
@@ -60,3 +63,18 @@ class Arrival:
             print "Error: no such policy yet."
             sys.exit(2)
             
+class MarkovChain:
+    def __init__(self, transition_matrix):
+        self.transition_matrix = transition_matrix;
+        
+    def next_state(self, current_state):
+        return np.random.choice([0,1], p=self.transition_matrix[current_state, :])
+    
+    def generate_seq(self, initial_state, length):
+        seq = []
+        current_state = initial_state
+        for i in range(length):
+            next_state = self.next_state(current_state)
+            seq.append(next_state)
+            current_state = next_state
+        return seq 
