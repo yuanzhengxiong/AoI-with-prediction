@@ -1,11 +1,14 @@
 from __future__ import division
 import numpy as np
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import csv
 from aoi import AoI
 from arrival import Arrival 
 from funcs import parse_args
 from multiprocessing import Pool
+import os
 
 seed = 3
 reset_val = 0
@@ -61,8 +64,12 @@ def show_policy_effect():
 
 def write_data(paras):
     avg_num, time_range, arrival_type, policy, p, w_range = paras
-    filename = "./data/av_{0}_tr_{1}_ar_{2}_po_{3}_p_{4}_wr_{5}-{6}.csv".format(avg_num, time_range, arrival_type, policy, p, w_range[0], w_range[1])
-    with open(filename, mode='w') as csv_file:
+    path = "/work/LAS/jialiu-lab/zyuan/AoI/data/av_{0}_tr_{1}_ar_{2}/".format(avg_num, time_range, arrival_type)
+    #path = "/work/LAS/jialiu-lab/zyuan/AoI/tmp/"
+    if not os.path.isdir(path):
+        os.mkdir(path)
+    filename = "av_{0}_tr_{1}_ar_{2}_po_{3}_p_{4}_wr_{5}-{6}.csv".format(avg_num, time_range, arrival_type, policy, p, w_range[0], w_range[1])
+    with open(path+filename, mode='w') as csv_file:
         fieldnames=['w', 's', 'p', 'T', 'avg_age', 'max_age'] 
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
@@ -85,17 +92,17 @@ def write_data(paras):
     
 def test_equal_spreading():
     avg_num = int(1e4) 
-    time_range = int(3e2)
-    arrival_type = 'Bernoulli'
+    time_range = int(1e3)
+    arrival_type = 'Markovian'
     policy = 'equal_spreading'
-    w_range = [1, time_range//10]
+    w_range = [1, 100]
 
     paras_list = []
-    for p in [x/100 for x in range(45, 55, 5)]:
+    for p in [x/100 for x in range(5, 55, 5)]:
         paras_list.append([avg_num, time_range, arrival_type, policy, p, w_range])
     print paras_list
 
-    pool = Pool(6)
+    pool = Pool(10)
     pool.map(write_data, paras_list)
     pool.close()
     pool.join()
