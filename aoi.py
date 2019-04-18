@@ -7,7 +7,7 @@ class AoI:
         for arrival in arrival_seq:
             self.op(arrival)
         self.max = max(self.seq)
-        self.avg = sum(self.seq)/len(self.seq)
+        self.avg = float("{0:.6f}".format(sum(self.seq)/len(self.seq)))
     
     def op(self, arrival): # AoI operator
         self.cur = self.cur+1 if arrival==0 else 0

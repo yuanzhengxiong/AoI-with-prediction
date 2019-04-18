@@ -64,45 +64,42 @@ def show_policy_effect():
 
 def write_data(paras):
     avg_num, time_range, arrival_type, policy, p, w_range = paras
-    path = "/work/LAS/jialiu-lab/zyuan/AoI/data/av_{0}_tr_{1}_ar_{2}/".format(avg_num, time_range, arrival_type)
+    path = "/work/LAS/jialiu-lab/zyuan/AoI/data3/av_{0}_tr_{1}_ar_{2}/".format(avg_num, time_range, arrival_type)
     #path = "/work/LAS/jialiu-lab/zyuan/AoI/tmp/"
     if not os.path.isdir(path):
         os.mkdir(path)
     filename = "av_{0}_tr_{1}_ar_{2}_po_{3}_p_{4}_wr_{5}-{6}.csv".format(avg_num, time_range, arrival_type, policy, p, w_range[0], w_range[1])
     with open(path+filename, mode='w') as csv_file:
-        fieldnames=['w', 's', 'p', 'T', 'avg_age', 'max_age'] 
+        fieldnames=['i', 'p', 'w', 's', 'avg_age', 'max_age'] 
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
-        for w in range(w_range[0], w_range[1]+1):
-            for s in range(1, w+1):
-                aoi_avgs = []
-                aoi_maxs = []
-                for i in range(avg_num):
-                    arrival = Arrival(time_range, arrival_type, p) 
+
+        for i in range(avg_num):
+            arrival = Arrival(time_range, arrival_type, p) 
+            for w in range(w_range[0], w_range[1]+1):
+                for s in range(1, w+1):
+                    arrival.initialize_replanned_seq()
                     for t in range(0, time_range-w+1, s):
                         arrival.replan(t, w, policy)
-                    aoi = AoI(arrival.seq)
-                    aoi_avgs.append(aoi.avg)
-                    aoi_maxs.append(aoi.max)
+                    aoi = AoI(arrival.replanned_seq)
 
-                data_dict = {'w': w, 's': s, 'p': p, 'T': time_range, 'avg_age': sum(aoi_avgs)/avg_num, 'max_age': sum(aoi_maxs)/avg_num}
-                print data_dict
-                writer.writerow(data_dict)
-                csv_file.flush()
+                    data_dict = {'i': i, 'w': w, 's': s, 'p': p, 'avg_age': aoi.avg, 'max_age': aoi.max}
+                    writer.writerow(data_dict)
+                    csv_file.flush()
     
 def test_equal_spreading():
-    avg_num = int(1e4) 
-    time_range = int(1e3)
-    arrival_type = 'Markovian'
+    avg_num = int(1e5) 
+    time_range = int(3e2)
+    arrival_type = 'Bernoulli'
     policy = 'equal_spreading'
-    w_range = [1, 100]
+    w_range = [1, 20]
 
     paras_list = []
-    for p in [x/100 for x in range(5, 55, 5)]:
+    for p in [x/100 for x in range(10, 55, 10)]:
         paras_list.append([avg_num, time_range, arrival_type, policy, p, w_range])
     print paras_list
 
-    pool = Pool(10)
+    pool = Pool(5)
     pool.map(write_data, paras_list)
     pool.close()
     pool.join()
