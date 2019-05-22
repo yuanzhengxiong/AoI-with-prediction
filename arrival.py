@@ -1,5 +1,6 @@
 import itertools
 import numpy as np
+import random
 import sys
 from aoi import AoI
 from equalize import equalize
@@ -12,7 +13,8 @@ class Arrival:
             self.seq = np.random.binomial(1, p, time_range)
         elif(arrival_type == "Markovian"):
             transition_matrix = np.array([[1-p, p], [p, 1-p]])
-            self.seq = MarkovChain(transition_matrix).generate_seq(initial_state=0, length=time_range)
+            initial_state = random.randint(0, 1) 
+            self.seq = MarkovChain(transition_matrix).generate_seq(initial_state=initial_state, length=time_range)
         elif(arrival_type == "test"):
             self.seq=[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0]
         self.replanned_seq = list(self.seq)
