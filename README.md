@@ -9,7 +9,7 @@ This is a project aming to minimize the AoI (Age of Information) with the help o
 # Usage
 
 ```
-$ git clone
+$ git clone https://github.com/jasonyuan97/AoI-with-prediction.git
 $ cd AoI
 # For Bernoulli Arrival:
 $ python3 AoI/main.py -a Bernoulli -av <number of sequences to averge from> -t <time range> -p <Bernoulli parameter> -w <window size> -sew <step size equals window size or not>
